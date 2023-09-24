@@ -16,7 +16,8 @@ func Must(t Template, e error) Template {
 }
 
 func ParseFS(fs embed.FS, patterns ...string) (Template, error) {
-	tpl, err := template.ParseFS(fs, patterns...)
+	pageWithLayout := append([]string{"layout-page.gohtml"}, patterns...)
+	tpl, err := template.ParseFS(fs, pageWithLayout...)
 	if err != nil {
 		return Template{}, fmt.Errorf("parsing template:  %w", err)
 	}

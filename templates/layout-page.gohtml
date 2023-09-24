@@ -1,0 +1,35 @@
+<html>
+  <body
+    style="
+      box-sizing: border-box;
+      margin: 0;
+      padding: 10px;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    ">
+    {{template "header"}}
+    <div style="flex: 1">
+      {{template "page" .}}
+    </div>
+    {{template "footer"}}
+  </body>
+</html>
+
+{{define "header"}}
+<nav>
+  <div style="display: flex; gap: 1rem; align-items: center">
+    <h1>LensLocked</h1>
+    <a href="/">Home</a>
+    <a href="/contact">Contact</a>
+    <a href="/faq">FAQ</a>
+    <a href="/words">Words</a>
+  </div>
+</nav>
+{{ end }}
+
+{{define "footer"}}
+<footer style="text-align: center">CopyRight of Sri Harsh Amur.</footer>
+
+{{ end }}
