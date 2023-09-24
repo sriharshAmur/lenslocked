@@ -2,35 +2,62 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
+	"path/filepath"
 
 	"github.com/go-chi/chi/v5"
 )
 
-func homeHandler(w http.ResponseWriter, r *http.Request) {
+func executeTemplate(w http.ResponseWriter, templatePath string, info interface{}) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Home Page!!!</h1>")
+	t, err := template.ParseFiles(templatePath)
+	if err != nil {
+		log.Printf("parsing template: %v", err)
+		http.Error(w, "There was an error parsing the template", http.StatusInternalServerError)
+		return
+	}
+	err = t.Execute(w, info)
+	if err != nil {
+		log.Printf("executing template: %v", err)
+		http.Error(w, "There was an error executing the template", http.StatusInternalServerError)
+		return
+	}
+}
+
+func homeHandler(w http.ResponseWriter, r *http.Request) {
+	tplPath := filepath.Join("templates", "home.gohtml")
+	user := struct {
+		Name string
+	}{
+		Name: "Sriharsh",
+	}
+	executeTemplate(w, tplPath, user)
 }
 
 func contactHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=uts-8")
-	fmt.Fprint(w, "<h1>Contact Page</h1> <p>Please contact us on <a href=\"mailto:test@test.com\">test@test.com</a></p>")
-}
-
-func errorHandler(w http.ResponseWriter, r *http.Request) {
-	http.Error(w, "Page Not Found", http.StatusNotFound)
+	tplPath := filepath.Join("templates", "contact.gohtml")
+	executeTemplate(w, tplPath, nil)
 }
 
 func wordsHandler(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	fmt.Fprint(w, "<h1>Type any word after the /words to display that on the page. </h1>")
+	tplPath := filepath.Join("templates", "words.gohtml")
+	executeTemplate(w, tplPath, nil)
 }
 
 func wordHandler(w http.ResponseWriter, r *http.Request) {
 	word := chi.URLParam(r, "word")
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	response := fmt.Sprintf("<h1>The word you typed is %s</h1>", word)
-	fmt.Fprint(w, response)
+	tplPath := filepath.Join("templates", "word.gohtml")
+	executeTemplate(w, tplPath, struct {
+		Word string
+	}{
+		Word: word,
+	})
+}
+
+func errorHandler(w http.ResponseWriter, r *http.Request) {
+	http.Error(w, "Page Not Found", http.StatusNotFound)
 }
 
 func main() {
