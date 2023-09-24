@@ -18,31 +18,22 @@ func main() {
 	r := chi.NewRouter()
 
 	tpl := views.Must(views.ParseFS(templates.FS, "home.gohtml"))
-	r.Get("/", controllers.StaticHandler(tpl, func(r *http.Request) interface{} {
-		return struct {
-			Name string
-		}{
-			Name: "Sriharsh",
-		}
-	}))
+	r.Get("/", controllers.Home(tpl))
 
 	tpl = views.Must(views.ParseFS(templates.FS, "contact.gohtml"))
-	r.Get("/contact", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
+	r.Get("/contact", controllers.StaticHandler(tpl))
 
 	tpl = views.Must(views.ParseFS(templates.FS, "faq.gohtml"))
 	r.Get("/faq", controllers.FAQ(tpl))
 
+	tpl = views.Must(views.ParseFS(templates.FS, "signup.gohtml"))
+	r.Get("/signup", controllers.StaticHandler(tpl))
+
 	tpl = views.Must(views.ParseFS(templates.FS, "words.gohtml"))
-	r.Get("/words", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
+	r.Get("/words", controllers.StaticHandler(tpl))
 
 	tpl = views.Must(views.ParseFS(templates.FS, "word.gohtml"))
-	r.Get("/words/{word}", controllers.StaticHandler(tpl, func(r *http.Request) interface{} {
-		return struct {
-			Word string
-		}{
-			Word: chi.URLParam(r, "word"),
-		}
-	}))
+	r.Get("/words/{word}", controllers.Word(tpl))
 
 	r.NotFound(errorHandler)
 

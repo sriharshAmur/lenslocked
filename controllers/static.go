@@ -4,12 +4,33 @@ import (
 	"html/template"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/sriharshamur/lenslocked/views"
 )
 
-func StaticHandler(tpl views.Template, data func(r *http.Request) interface{}) http.HandlerFunc {
+func StaticHandler(tpl views.Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		tpl.Execute(w, data(r))
+		tpl.Execute(w, nil)
+	}
+}
+
+func Home(tpl views.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl.Execute(w, struct {
+			Name string
+		}{
+			Name: "Sriharsh",
+		})
+	}
+}
+
+func Word(tpl views.Template) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		tpl.Execute(w, struct {
+			Word string
+		}{
+			Word: chi.URLParam(r, "word"),
+		})
 	}
 }
 
