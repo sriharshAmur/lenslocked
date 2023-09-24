@@ -17,10 +17,7 @@ func errorHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := chi.NewRouter()
 
-	tpl, err := views.Parse(filepath.Join("templates", "home.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tpl := views.Must(views.Parse(filepath.Join("templates", "home.gohtml")))
 	r.Get("/", controllers.StaticHandler(tpl, func(r *http.Request) interface{} {
 		return struct {
 			Name string
@@ -29,22 +26,13 @@ func main() {
 		}
 	}))
 
-	tpl, err = views.Parse(filepath.Join("templates", "contact.gohtml"))
-	if err != nil {
-		panic(err)
-	}
-	r.Get("/contact", controllers.StaticHandler(tpl, nil))
+	tpl = views.Must(views.Parse(filepath.Join("templates", "contact.gohtml")))
+	r.Get("/contact", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
 
-	tpl, err = views.Parse(filepath.Join("templates", "words.gohtml"))
-	if err != nil {
-		panic(err)
-	}
-	r.Get("/words", controllers.StaticHandler(tpl, nil))
+	tpl = views.Must(views.Parse(filepath.Join("templates", "words.gohtml")))
+	r.Get("/words", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
 
-	tpl, err = views.Parse(filepath.Join("templates", "word.gohtml"))
-	if err != nil {
-		panic(err)
-	}
+	tpl = views.Must(views.Parse(filepath.Join("templates", "word.gohtml")))
 	r.Get("/words/{word}", controllers.StaticHandler(tpl, func(r *http.Request) interface{} {
 		return struct {
 			Word string
