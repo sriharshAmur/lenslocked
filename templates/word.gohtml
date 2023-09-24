@@ -1,4 +1,9 @@
 {{define "page"}}
+<button
+  class="bg-gray-300 p-2 rounded-md hover:bg-gray-400"
+  onclick="window.history.back()">
+  Go Back
+</button>
 <h1 class="py-4 text-4xl font-semibold tracking-tight">{{.Word}}</h1>
 <p>The word you typed is {{.Word}}</p>
-{{end}}
+{{ end }}
