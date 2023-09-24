@@ -15,8 +15,8 @@ func Must(t Template, e error) Template {
 	return t
 }
 
-func ParseFS(fs embed.FS, pattern string) (Template, error) {
-	tpl, err := template.ParseFS(fs, pattern)
+func ParseFS(fs embed.FS, patterns ...string) (Template, error) {
+	tpl, err := template.ParseFS(fs, patterns...)
 	if err != nil {
 		return Template{}, fmt.Errorf("parsing template:  %w", err)
 	}
