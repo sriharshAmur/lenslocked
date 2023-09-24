@@ -12,6 +12,10 @@
           Email Address
         </label>
         <input
+          value="{{.Email}}"
+          {{if
+          not
+          .Email}}autofocus{{end}}
           name="email"
           id="email"
           type="email"
@@ -27,6 +31,8 @@
           Password
         </label>
         <input
+          {{if
+          .Email}}autofocus{{end}}
           name="password"
           id="password"
           type="password"
