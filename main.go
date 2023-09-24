@@ -29,6 +29,7 @@ func main() {
 	userC := controllers.Users{}
 	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup.gohtml"))
 	r.Get("/signup", userC.New)
+	r.Post("/users", userC.Create)
 
 	tpl = views.Must(views.ParseFS(templates.FS, "words.gohtml"))
 	r.Get("/words", controllers.StaticHandler(tpl))

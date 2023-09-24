@@ -5,16 +5,15 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/sriharshamur/lenslocked/views"
 )
 
-func StaticHandler(tpl views.Template) http.HandlerFunc {
+func StaticHandler(tpl Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tpl.Execute(w, nil)
 	}
 }
 
-func Home(tpl views.Template) http.HandlerFunc {
+func Home(tpl Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tpl.Execute(w, struct {
 			Name string
@@ -24,7 +23,7 @@ func Home(tpl views.Template) http.HandlerFunc {
 	}
 }
 
-func Word(tpl views.Template) http.HandlerFunc {
+func Word(tpl Template) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tpl.Execute(w, struct {
 			Word string
@@ -34,7 +33,7 @@ func Word(tpl views.Template) http.HandlerFunc {
 	}
 }
 
-func FAQ(tpl views.Template) http.HandlerFunc {
+func FAQ(tpl Template) http.HandlerFunc {
 	questions := []struct {
 		Question string
 		Answer   template.HTML
