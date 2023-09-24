@@ -29,6 +29,9 @@ func main() {
 	tpl = views.Must(views.ParseFS(templates.FS, "contact.gohtml"))
 	r.Get("/contact", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
 
+	tpl = views.Must(views.ParseFS(templates.FS, "faq.gohtml"))
+	r.Get("/faq", controllers.FAQ(tpl))
+
 	tpl = views.Must(views.ParseFS(templates.FS, "words.gohtml"))
 	r.Get("/words", controllers.StaticHandler(tpl, func(r *http.Request) interface{} { return nil }))
 
