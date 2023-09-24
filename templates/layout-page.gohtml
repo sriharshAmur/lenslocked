@@ -1,35 +1,34 @@
+<!DOCTYPE html>
 <html>
-  <body
-    style="
-      box-sizing: border-box;
-      margin: 0;
-      padding: 10px;
-      width: 100vw;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-    ">
-    {{template "header"}}
-    <div style="flex: 1">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  
+  <body class="w-screen h-screen flex flex-col p-4">
+    {{template "header" .}}
+    <div class="flex-1">
       {{template "page" .}}
     </div>
-    {{template "footer"}}
+    {{template "footer" .}}
   </body>
 </html>
 
 {{define "header"}}
-<nav>
-  <div style="display: flex; gap: 1rem; align-items: center">
-    <h1>LensLocked</h1>
-    <a href="/">Home</a>
-    <a href="/contact">Contact</a>
-    <a href="/faq">FAQ</a>
-    <a href="/words">Words</a>
+<nav class="flex items-center gap-2 pb-4">
+    <h1 class="font-bold text-xl">LensLocked</h1>
+    <a class="text-gray-700 hover:text-blue-600 " href="/">Home</a>
+    <a class="text-gray-700 hover:text-blue-600 " href="/contact">Contact</a>
+    <a class="text-gray-700 hover:text-blue-600 " href="/faq">FAQ</a>
+    <a class="text-gray-700 hover:text-blue-600 " href="/words">Words</a>
   </div>
 </nav>
 {{ end }}
 
 {{define "footer"}}
-<footer style="text-align: center">CopyRight of Sri Harsh Amur.</footer>
+<footer class="text-center">CopyRight of Sri Harsh Amur.</footer>
 
 {{ end }}
