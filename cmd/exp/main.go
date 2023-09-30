@@ -1,33 +1,43 @@
 package main
 
 import (
-	"errors"
+	"database/sql"
 	"fmt"
+
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
+type PostgresConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Database string
+	SSLMode  string
+}
+
+func (pgc PostgresConfig) String() string {
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", pgc.Host, pgc.Port, pgc.User, pgc.Password, pgc.Database, pgc.SSLMode)
+}
+
 func main() {
-	err := CreateOrg()
-	fmt.Println(err)
-}
-
-func Connect() error {
-	return errors.New("connection failed")
-}
-
-func CreateUser() error {
-	err := Connect()
-	if err != nil {
-		// return err
-		return fmt.Errorf("while creating user: %w", err)
+	pgConfig := PostgresConfig{
+		Host:     "localhost",
+		Port:     "5432",
+		User:     "baloo",
+		Password: "junglebook",
+		Database: "lenslocked",
+		SSLMode:  "disable",
 	}
-	return nil
-}
-
-func CreateOrg() error {
-	err := CreateUser()
+	db, err := sql.Open("pgx", pgConfig.String())
 	if err != nil {
-		// return err
-		return fmt.Errorf("while creating org: %w", err)
+		panic(err)
 	}
-	return nil
+	defer db.Close()
+
+	err = db.Ping()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Connected")
 }
