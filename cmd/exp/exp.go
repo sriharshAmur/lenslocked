@@ -1,10 +1,10 @@
 package main
 
 import (
-	"database/sql"
 	"fmt"
 
 	_ "github.com/jackc/pgx/v4/stdlib"
+	"github.com/sriharshamur/lenslocked/models"
 )
 
 type PostgresConfig struct {
@@ -21,15 +21,8 @@ func (pgc PostgresConfig) String() string {
 }
 
 func main() {
-	pgConfig := PostgresConfig{
-		Host:     "localhost",
-		Port:     "5432",
-		User:     "baloo",
-		Password: "junglebook",
-		Database: "lenslocked",
-		SSLMode:  "disable",
-	}
-	db, err := sql.Open("pgx", pgConfig.String())
+	pgConfig := models.DefaultPostgresConfig()
+	db, err := models.Open(pgConfig)
 	if err != nil {
 		panic(err)
 	}
@@ -41,24 +34,33 @@ func main() {
 	}
 	fmt.Println("Connected")
 
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS users (
-			id SERIAL PRIMARY KEY,
-			name TEXT,
-			email TEXT UNIQUE NOT NULL
-		);
-
-		CREATE TABLE IF NOT EXISTS orders (
-			id SERIAL PRIMARY KEY, 
-			user_id INT NOT NULL,
-			amount INT,
-			description TEXT
-		);
-	`)
+	us := models.UserService{
+		DB: db,
+	}
+	user, err := us.Create("bob1@test.com", "bobspassword")
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("Tables Created!")
+	fmt.Println(user)
+
+	// _, err = db.Exec(`
+	// 	CREATE TABLE IF NOT EXISTS users (
+	// 		id SERIAL PRIMARY KEY,
+	// 		name TEXT,
+	// 		email TEXT UNIQUE NOT NULL
+	// 	);
+
+	// 	CREATE TABLE IF NOT EXISTS orders (
+	// 		id SERIAL PRIMARY KEY,
+	// 		user_id INT NOT NULL,
+	// 		amount INT,
+	// 		description TEXT
+	// 	);
+	// `)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("Tables Created!")
 
 	// Create user
 	// name := "Sri Harsh Amur"
@@ -105,36 +107,36 @@ func main() {
 	// }
 	// fmt.Println("Created 5 Orders")
 
-	type Order struct {
-		ID          int
-		UserID      int
-		Amount      int
-		Description string
-	}
-	var orders []Order
-	userId := 1
-	rows, err := db.Query(`
-		SELECT id, amount, description 
-		FROM orders 
-		WHERE user_id=$1
-	`, userId)
-	if err != nil {
-		panic(err)
-	}
-	defer rows.Close()
+	// type Order struct {
+	// 	ID          int
+	// 	UserID      int
+	// 	Amount      int
+	// 	Description string
+	// }
+	// var orders []Order
+	// userId := 1
+	// rows, err := db.Query(`
+	// 	SELECT id, amount, description
+	// 	FROM orders
+	// 	WHERE user_id=$1
+	// `, userId)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// defer rows.Close()
 
-	for rows.Next() {
-		var order Order
-		order.UserID = userId
-		err = rows.Scan(&order.ID, &order.Amount, &order.Description)
-		if err != nil {
-			panic(err)
-		}
-		orders = append(orders, order)
-	}
-	err = rows.Err()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Orders:", orders)
+	// for rows.Next() {
+	// 	var order Order
+	// 	order.UserID = userId
+	// 	err = rows.Scan(&order.ID, &order.Amount, &order.Description)
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// 	orders = append(orders, order)
+	// }
+	// err = rows.Err()
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("Orders:", orders)
 }
