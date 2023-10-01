@@ -60,19 +60,81 @@ func main() {
 	}
 	fmt.Println("Tables Created!")
 
-	name := "Sri Harsh Amur"
-	email := "sriharshamur1@gmail.com"
+	// Create user
+	// name := "Sri Harsh Amur"
+	// email := "sriharshamur1@gmail.com"
 	// _, err = db.Exec(`
 	// 	INSERT INTO users (name, email)
 	// 	VALUES ($1, $2);`, name, email)
-	row := db.QueryRow(`
-		INSERT INTO users (name, email)
-		VALUES ($1, $2) RETURNING id;
-	`, name, email)
-	var id int
-	err = row.Scan(&id)
+	// row := db.QueryRow(`
+	// 	INSERT INTO users (name, email)
+	// 	VALUES ($1, $2) RETURNING id;
+	// `, name, email)
+	// var id int
+	// err = row.Scan(&id)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Println("User Created with id =", id)
+
+	// Get User Information
+	// id := 1
+	// row := db.QueryRow(`SELECT name, email
+	// FROM users
+	// WHERE id=$1`, id)
+	// var name, email string
+	// err = row.Scan(&name, &email)
+	// if err != nil {
+	// 	panic(err)
+	// }
+	// fmt.Printf("User Information: name=%s, email=%s\n", name, email)
+
+	// Create orders for a user
+	// userId := 1
+	// for i := 1; i <= 5; i++ {
+	// 	amount := i * 100
+	// 	description := fmt.Sprintf("Fake Order #%d", i)
+	// 	_, err = db.Exec(`
+	// 		INSERT INTO orders (user_id, amount, description)
+	// 		VALUES ($1 ,$2, $3)
+	// 	`, userId, amount, description)
+
+	// 	if err != nil {
+	// 		panic(err)
+	// 	}
+	// }
+	// fmt.Println("Created 5 Orders")
+
+	type Order struct {
+		ID          int
+		UserID      int
+		Amount      int
+		Description string
+	}
+	var orders []Order
+	userId := 1
+	rows, err := db.Query(`
+		SELECT id, amount, description 
+		FROM orders 
+		WHERE user_id=$1
+	`, userId)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("User Created with id =", id)
+	defer rows.Close()
+
+	for rows.Next() {
+		var order Order
+		order.UserID = userId
+		err = rows.Scan(&order.ID, &order.Amount, &order.Description)
+		if err != nil {
+			panic(err)
+		}
+		orders = append(orders, order)
+	}
+	err = rows.Err()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Orders:", orders)
 }
