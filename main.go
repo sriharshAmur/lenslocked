@@ -37,14 +37,15 @@ func main() {
 		DB: db,
 	}
 
-	userC := controllers.Users{
+	usersC := controllers.Users{
 		UserService: &userService,
 	}
-	userC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup.gohtml"))
-	userC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin.gohtml"))
-	r.Get("/signup", userC.New)
-	r.Get("/signin", userC.SignIn)
-	r.Post("/users", userC.Create)
+	usersC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup.gohtml"))
+	usersC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin.gohtml"))
+	r.Get("/signup", usersC.New)
+	r.Get("/signin", usersC.SignIn)
+	r.Post("/users", usersC.Create)
+	r.Post("/signin", usersC.ProcessSignIn)
 
 	tpl = views.Must(views.ParseFS(templates.FS, "words.gohtml"))
 	r.Get("/words", controllers.StaticHandler(tpl))
